@@ -1,2 +1,6 @@
 solar_wind.csv
 Modelos_v2.ipynb
+*.pkl
+*.joblib
+*.jpg
+Reporte de Anomalías.pdf
