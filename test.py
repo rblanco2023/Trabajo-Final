@@ -34,54 +34,54 @@ filePath = "C:/Users/raul.blanco/Documents/4 - Personales/UBA/Repositorios/IA/Tr
 y_full = pd.read_csv(filepath_or_buffer=filePath, header=0, sep=",")
 y = y_full['class']
 y_full = y_full.to_numpy()
-
-model_autoencoder = load('model_autoencoder.joblib')
-
 test_data = test_data.drop(['Unnamed: 0',"timedelta"], axis=1)
-
 test_data = test_data.to_numpy()
 
-test_data_LSTM = test_data.reshape(test_data.shape[0],1,test_data.shape[1])
+select = int(input("Presione 1 para LSTM Autoencoder, 2 para Restricted Boltzmann Machine, 3 para Isolation Forest, 4 para Support Vector Machines: "))
 
-predictions_LSTM = model_autoencoder.predict(test_data_LSTM)
+if select == 1:
 
-threshold_LSTM = float(input("Modelo LSTM Autoencoder. Ingrese el Threshold a utilizar: "))
+    model = load('model_autoencoder.joblib')
+    test_data_LSTM = test_data.reshape(test_data.shape[0],1,test_data.shape[1])
+    predictions_LSTM = model.predict(test_data_LSTM)
 
-predictions_LSTM[predictions_LSTM >= threshold_LSTM] = 1
-predictions_LSTM[predictions_LSTM < threshold_LSTM] = 0
-predictions_LSTM = predictions_LSTM.reshape(predictions_LSTM.shape[0], predictions_LSTM.shape[2])
+    threshold_LSTM = float(input("Modelo LSTM Autoencoder. Ingrese el Threshold a utilizar: "))
 
-test_data = test_data.reshape(test_data_LSTM.shape[0], test_data_LSTM.shape[2])
-confusion_matrix = pd.crosstab(y_full[:, -1], predictions_LSTM[:, 10], rownames=['Actual'], colnames=['Predicted'])
-print(confusion_matrix)
+    predictions_LSTM[predictions_LSTM >= threshold_LSTM] = 1
+    predictions_LSTM[predictions_LSTM < threshold_LSTM] = 0
+    predictions_LSTM = predictions_LSTM.reshape(predictions_LSTM.shape[0], predictions_LSTM.shape[2])
 
-pd_predictions_LSTM = pd.DataFrame(predictions_LSTM)
+    test_data = test_data.reshape(test_data_LSTM.shape[0], test_data_LSTM.shape[2])
+    confusion_matrix = pd.crosstab(y_full[:, -1], predictions_LSTM[:, 10], rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
 
-column_10 = predictions_LSTM[:, 10]
-is_one_LSTM = column_10 ==1
+    pd_predictions_LSTM = pd.DataFrame(predictions_LSTM)
 
-# Asignar 1 a los elementos que sean True y 0 a los elementos que sean False
-has_ones_LSTM = np.where(is_one_LSTM, 1, 0)
+    column_10 = predictions_LSTM[:, 10]
+    is_one_LSTM = column_10 ==1
 
-has_ones_LSTM_pd = pd.DataFrame(has_ones_LSTM, columns=['class'])
-count = (has_ones_LSTM_pd['class'] == 1).sum()
-count1 = (has_ones_LSTM_pd['class'] == 0).sum()
-print(f'El número de anomalias es {count} y {count1} son valores normales')
+    # Asignar 1 a los elementos que sean True y 0 a los elementos que sean False
+    has_ones_LSTM = np.where(is_one_LSTM, 1, 0)
 
-new_column_LSTM = has_ones_LSTM
+    has_ones_LSTM_pd = pd.DataFrame(has_ones_LSTM, columns=['class'])
+    count = (has_ones_LSTM_pd['class'] == 1).sum()
+    count1 = (has_ones_LSTM_pd['class'] == 0).sum()
+    print(f'El número de anomalias es {count} y {count1} son valores normales')
 
-# Agregar la nueva columna al final del ndarray original
-predictions_class_LSTM = np.hstack((predictions_LSTM, new_column_LSTM.reshape(-1, 1)))
+    new_column_LSTM = has_ones_LSTM
 
-pd_predictions_LSTM = pd.DataFrame(predictions_class_LSTM)
+    # Agregar la nueva columna al final del ndarray original
+    predictions_class = np.hstack((predictions_LSTM, new_column_LSTM.reshape(-1, 1)))
 
-pd_test_data = pd.DataFrame(test_data)
+    pd_predictions_LSTM = pd.DataFrame(predictions_class)
 
-print(classification_report(predictions_class_LSTM[:,14], y))
+    pd_test_data = pd.DataFrame(test_data)
 
-y_pd = pd.DataFrame(y, columns = ['class'])
+    print(classification_report(predictions_class[:,14], y))
 
-predictions_class_LSTM_pd  = pd.DataFrame(predictions_class_LSTM, columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','class'])
+    y_pd = pd.DataFrame(y, columns = ['class'])
+
+predictions_class_pd  = pd.DataFrame(predictions_class, columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','class'])
 
 import matplotlib.pyplot as plt 
 import seaborn as sns
@@ -101,16 +101,16 @@ class visualization:
     #plt.show()
 
 viz = visualization()
-viz.draw_confusion_matrix(y_pd, predictions_class_LSTM[:,14])
+viz.draw_confusion_matrix(y_pd, predictions_class[:,14])
 
 from sklearn.metrics import roc_auc_score
 clase = y_full[:,-1].astype(int)
 # Calcular el AUC para cada modelo utilizando la función roc_auc_score() de la biblioteca scikit-learn
-LSTM_auc = roc_auc_score(clase, predictions_class_LSTM[:,14])
+LSTM_auc = roc_auc_score(clase, predictions_class[:,14])
 
 test_timedelta.reset_index(inplace=True)
 
-predictions_class_LSTM_pd = pd.concat([test_timedelta, predictions_class_LSTM_pd], axis = 1 , join = "inner")
+predictions_class_LSTM_pd = pd.concat([test_timedelta, predictions_class_pd], axis = 1 , join = "inner")
 
 anomalies_LSTM = predictions_class_LSTM_pd.loc[predictions_class_LSTM_pd['class'] == 1.0,['timedelta']]
 

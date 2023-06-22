@@ -108,7 +108,7 @@ if select == 1: ### LSTM AUTOENCODER ###
     model_autoencoder.compile(optimizer='adam', loss='mse')
 
     #Entreno el modelo
-    model_autoencoder.fit(train_data_LSTM, train_data_LSTM, epochs=1, batch_size=320, validation_split=0.1)
+    model_autoencoder.fit(train_data_LSTM, train_data_LSTM, epochs=20   , batch_size=320, validation_split=0.1)
     #Guardo el modelo.
     joblib.dump(model_autoencoder, 'model_autoencoder.joblib')
 
@@ -121,7 +121,7 @@ elif select == 2: ### RBM ###
     #Entreno el modelo
     model_rbm.fit(train_data, train_data, epochs=10, batch_size=32, verbose=1, validation_split=0.1)
     #Guardo el modelo.    
-    joblib.dump(model_rbm, 'model_rbm.pkl')
+    joblib.dump(model_rbm, 'model_rbm.joblib')
 
 elif select == 3: ### Isolation Forest ###
     #Modelo
@@ -129,7 +129,7 @@ elif select == 3: ### Isolation Forest ###
     #Entreno el modelo
     model_if.fit(train_data,train_data)
     #Guardo el modelo.
-    joblib.dump(model_if, 'model_if.pkl')
+    joblib.dump(model_if, 'model_if.joblib')
 
 elif select == 4: ### Support Vector Machines ###
     #Modelo
@@ -137,7 +137,7 @@ elif select == 4: ### Support Vector Machines ###
     #Entreno el modelo
     model_svm.fit(train_data)
     #Guardo el modelo.
-    joblib.dump(model_svm, 'model_svm.pkl')
+    joblib.dump(model_svm, 'model_svm.joblib')
 else:
     print('Debe seleccionar un modelo')
 
