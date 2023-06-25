@@ -138,7 +138,7 @@ elif select == 2:
     count1 = (pd_predictions['class'] == 0).sum()
     print(f'El número de anomalias es {count} y {count1} son valores normales')
 
-elif select == 3:
+elif select == 3: #IF
     model = load('model_if.joblib')
     predictions = model.predict(test_data)
 
