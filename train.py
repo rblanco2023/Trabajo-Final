@@ -13,9 +13,11 @@ from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 import joblib
 from joblib import dump
+from keras.models import model_from_json
 
 
 print("Se está cargando el dataset. Aguarde un momento")
+
 filePath = "C:/Users/raul.blanco/Documents/4 - Personales/UBA/Repositorios/IA/Trabajo-Final/solar_wind.csv"
 dF = pd.read_csv(filepath_or_buffer=filePath, header=0, sep=",")
 
@@ -108,11 +110,20 @@ if select == 1: ### LSTM AUTOENCODER ###
     model_autoencoder.compile(optimizer='adam', loss='mse')
 
     #Entreno el modelo
-    model_autoencoder.fit(train_data_LSTM, train_data_LSTM, epochs=20   , batch_size=320, validation_split=0.1)
+    model_autoencoder.fit(train_data_LSTM, train_data_LSTM, epochs=1, batch_size=320, validation_split=0.1)
     #Guardo el modelo.
-    joblib.dump(model_autoencoder, 'model_autoencoder.joblib')
+    #joblib.dump(model_autoencoder, 'model_autoencoder.joblib')
 
+    # serializa el modelo para JSON
+    model_json = model_autoencoder.to_json()
+    with open("model_LSTM.json", "w") as json_file:
+        json_file.write(model_json)
+    #serializan los pesos (weights) para HDF5
+    model_autoencoder.save_weights("model_LSTM.h5")
+    print("Modelo guardado en el PC")
 elif select == 2: ### RBM ###
+    print("Seleccionó Restrictive Boltzmann Machine")
+    print("A continuación se entrenará el modelo")
     #Modelo
     model_rbm = Sequential()
     model_rbm.add(Dense(20, input_shape=(train_data.shape[1],), activation='sigmoid'))
@@ -120,8 +131,15 @@ elif select == 2: ### RBM ###
     model_rbm.compile(optimizer=Adam(learning_rate=0.01), loss='mse')
     #Entreno el modelo
     model_rbm.fit(train_data, train_data, epochs=10, batch_size=32, verbose=1, validation_split=0.1)
-    #Guardo el modelo.    
-    joblib.dump(model_rbm, 'model_rbm.joblib')
+    #Guardo el modelo.
+    #joblib.dump(model_rbm, 'model_rbm.pkl')
+    # serializa el modelo para JSON
+    model_json = model_rbm.to_json()
+    with open("model_rbm.json", "w") as json_file:
+        json_file.write(model_json)
+    #serializan los pesos (weights) para HDF5
+    model_rbm.save_weights("model_rbm.h5")
+    print("Modelo guardado localmente")
 
 elif select == 3: ### Isolation Forest ###
     #Modelo
@@ -130,6 +148,13 @@ elif select == 3: ### Isolation Forest ###
     model_if.fit(train_data,train_data)
     #Guardo el modelo.
     joblib.dump(model_if, 'model_if.joblib')
+    # serializa el modelo para JSON
+    #model_json = model_if.to_json()
+    #with open("model_if.json", "w") as json_file:
+    #    json_file.write(model_json)
+    #serializan los pesos (weights) para HDF5
+    #model_if.save_weights("model_if.h5")
+    print("Modelo guardado localmente")
 
 elif select == 4: ### Support Vector Machines ###
     #Modelo
@@ -137,7 +162,14 @@ elif select == 4: ### Support Vector Machines ###
     #Entreno el modelo
     model_svm.fit(train_data)
     #Guardo el modelo.
-    joblib.dump(model_svm, 'model_svm.joblib')
+    #joblib.dump(model_svm, 'model_svm.joblib')
+    # serializa el modelo para JSON
+    model_json = model_svm.to_json()
+    with open("model_svm.json", "w") as json_file:
+        json_file.write(model_json)
+    #serializan los pesos (weights) para HDF5
+    model_svm.save_weights("model_svm.h5")
+    print("Modelo guardado en el PC")
 else:
     print('Debe seleccionar un modelo')
 
