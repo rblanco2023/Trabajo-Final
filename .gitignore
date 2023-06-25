@@ -5,3 +5,5 @@ Modelos_v2.ipynb
 *.jpg
 Reporte de Anomalías.pdf
 *.csv
+*.h5
+*.json
