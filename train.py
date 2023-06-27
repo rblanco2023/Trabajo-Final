@@ -162,13 +162,13 @@ elif select == 4: ### Support Vector Machines ###
     #Entreno el modelo
     model_svm.fit(train_data)
     #Guardo el modelo.
-    #joblib.dump(model_svm, 'model_svm.joblib')
+    joblib.dump(model_svm, 'model_svm.joblib')
     # serializa el modelo para JSON
-    model_json = model_svm.to_json()
-    with open("model_svm.json", "w") as json_file:
-        json_file.write(model_json)
+    #model_json = model_svm.to_json()
+    #with open("model_svm.json", "w") as json_file:
+    #    json_file.write(model_json)
     #serializan los pesos (weights) para HDF5
-    model_svm.save_weights("model_svm.h5")
+    #model_svm.save_weights("model_svm.h5")
     print("Modelo guardado en el PC")
 else:
     print('Debe seleccionar un modelo')

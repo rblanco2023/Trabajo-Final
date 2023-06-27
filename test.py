@@ -163,8 +163,30 @@ elif select == 3: #IF
 
     auc = roc_auc_score(clase, pd_predictions['class'])
 
-#elif select == 4: ### Support Vector Machines ###
+elif select == 4: ### Support Vector Machines ###
+    model = load('model_svm.joblib')
+    predictions = model.predict(test_data)
 
+    threshold_svm = float(input("Modelo Suport Vector Machine. Ingrese el Threshold a utilizar: "))
+
+    predictions[predictions >= threshold_svm] = 1
+    predictions[predictions < threshold_svm] = 0
+
+    confusion_matrix = pd.crosstab(y_full[:, -1], predictions, rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
+
+    pd_predictions = pd.DataFrame(predictions, columns=['class'])
+    count = (pd_predictions['class'] == 1).sum()
+    count1 = (pd_predictions['class'] == 0).sum()
+    print(f'El número de anomalias predecidas es {count} y {count1} valores normales')
+
+    print(classification_report(pd_predictions, y))
+
+    y_pd = pd.DataFrame(y, columns = ['class'])
+    count = (y_pd['class'] == 1).sum()
+    print(f'El número de anomalias reales es {count}')
+
+    auc = roc_auc_score(clase, pd_predictions['class'])
 
 
 #predictions_class_pd  = pd.DataFrame(predictions_class, columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','class'])
