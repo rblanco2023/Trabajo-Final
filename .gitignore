@@ -7,3 +7,8 @@ Reporte de Anomalías.pdf
 *.csv
 *.h5
 *.json
+mlruns.db
+*.csv
+06-Varios/
+07-Modelos_Ok/
+mlflow_server.txt
