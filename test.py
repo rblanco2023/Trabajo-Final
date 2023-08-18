@@ -61,6 +61,7 @@ if select == 1:
     predictions[predictions >= threshold_LSTM] = 1
     predictions[predictions < threshold_LSTM] = 0
     predictions = predictions.reshape(predictions.shape[0], predictions.shape[2])
+    
 
     test_data = test_data.reshape(test_data_LSTM.shape[0], test_data_LSTM.shape[2])
     confusion_matrix = pd.crosstab(y_full[:, -1], predictions[:, 10], rownames=['Actual'], colnames=['Predicted'])
