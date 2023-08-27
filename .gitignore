@@ -9,6 +9,8 @@ Reporte de Anomalías.pdf
 *.json
 mlruns.db
 *.csv
+04 - Support Vector Machines/
+05 -Modelos Integrados/
 06-Varios/
 07-Modelos_Ok/
 mlflow_server.txt
